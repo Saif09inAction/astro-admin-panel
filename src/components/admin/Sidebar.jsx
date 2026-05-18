@@ -49,7 +49,7 @@ export default function Sidebar({ active, onNavigate, collapsed, onToggleCollaps
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <p className="font-cinzel text-[13px] font-bold text-white leading-tight">Pandit Ji</p>
+            <p className="font-cinzel text-[12px] font-bold text-white leading-tight">Dheeraj Shastri Ji</p>
             <p className="font-poppins text-[10px] text-white/30 tracking-wider uppercase">Admin Panel</p>
           </div>
         )}

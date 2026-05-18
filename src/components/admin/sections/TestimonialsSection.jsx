@@ -5,7 +5,17 @@ import { getTestimonials, addTestimonial, updateTestimonial, deleteTestimonial }
 
 const AVATAR_COLORS = ['#f472b6','#60a5fa','#fbbf24','#34d399','#a78bfa','#f97316']
 
-const inputCls = "w-full bg-white/4 border border-white/10 rounded-xl px-4 py-2.5 font-poppins text-sm text-white placeholder-white/25 focus:outline-none focus:border-gold-400/30 transition-all"
+const DEFAULT_TESTIMONIALS = [
+  { name: 'Priya Sharma',    location: 'Delhi',     service: 'Love Problem Solution',  text: 'Dheeraj Shastri Ji solved my love problem within 3 days. Truly miraculous results!', rating: 5, color: '#f472b6' },
+  { name: 'Rahul Verma',     location: 'Mumbai',    service: 'Career Guidance',         text: 'My career transformed completely after following his guidance. Highly recommended!', rating: 5, color: '#60a5fa' },
+  { name: 'Anita Singh',     location: 'Jaipur',    service: 'Marriage Consultation',   text: 'We were facing many obstacles in our marriage. Shastri Ji removed all hurdles.', rating: 5, color: '#fbbf24' },
+  { name: 'Vikram Patel',    location: 'Ahmedabad', service: 'Business Problems',       text: 'My business was at a loss for 2 years. After his remedies, everything changed.', rating: 5, color: '#34d399' },
+  { name: 'Sunita Gupta',    location: 'Lucknow',   service: 'Ex Love Back',            text: 'My ex came back within a week. I am so grateful to Dheeraj Shastri Ji.', rating: 5, color: '#a78bfa' },
+  { name: 'Amit Joshi',      location: 'Pune',      service: 'Kundli Matching',         text: 'The kundli analysis was incredibly accurate and detailed. Very satisfied.', rating: 5, color: '#f97316' },
+]
+
+const inputCls = "w-full border border-white/10 rounded-xl px-4 py-2.5 font-poppins text-sm text-white placeholder-white/25 focus:outline-none focus:border-yellow-400/40 transition-all"
+const inputStyle = { background: '#0d1628' }
 
 function TestimonialFormModal({ testimonial, onSave, onClose, saving }) {
   const isEdit = !!testimonial?.id
@@ -42,23 +52,23 @@ function TestimonialFormModal({ testimonial, onSave, onClose, saving }) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="font-poppins text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block">Client Name *</label>
-                <input className={inputCls} placeholder="Priya Sharma" value={form.name}
+                <input className={inputCls} style={inputStyle} placeholder="Priya Sharma" value={form.name}
                   onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required />
               </div>
               <div>
                 <label className="font-poppins text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block">Location</label>
-                <input className={inputCls} placeholder="Delhi" value={form.location}
+                <input className={inputCls} style={inputStyle} placeholder="Delhi" value={form.location}
                   onChange={e => setForm(p => ({ ...p, location: e.target.value }))} />
               </div>
             </div>
             <div>
               <label className="font-poppins text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block">Service</label>
-              <input className={inputCls} placeholder="Love Problem Solution" value={form.service}
+              <input className={inputCls} style={inputStyle} placeholder="Love Problem Solution" value={form.service}
                 onChange={e => setForm(p => ({ ...p, service: e.target.value }))} />
             </div>
             <div>
               <label className="font-poppins text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block">Testimonial *</label>
-              <textarea className={`${inputCls} resize-none`} rows={3} placeholder="Write the client's testimonial here…"
+              <textarea className={`${inputCls} resize-none`} style={inputStyle} rows={3} placeholder="Write the client's testimonial here…"
                 value={form.text} onChange={e => setForm(p => ({ ...p, text: e.target.value }))} required />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -148,13 +158,30 @@ export default function TestimonialsSection() {
   const [modal,        setModal]        = useState(null)
   const [saving,       setSaving]       = useState(false)
   const [deleteId,     setDeleteId]     = useState(null)
+  const [seeding,      setSeeding]      = useState(false)
 
   useEffect(() => {
     getTestimonials()
       .then(setTestimonials)
-      .catch(() => {})
+      .catch(err => console.error('Failed to load testimonials:', err))
       .finally(() => setLoading(false))
   }, [])
+
+  const handleSeedDefaults = async () => {
+    setSeeding(true)
+    try {
+      const added = []
+      for (const t of DEFAULT_TESTIMONIALS) {
+        const avatar = (t.name[0] + (t.name.split(' ')[1]?.[0] || '')).toUpperCase()
+        const ref = await addTestimonial({ ...t, avatar })
+        added.push({ id: ref.id, ...t, avatar })
+      }
+      setTestimonials(added)
+    } catch (err) {
+      console.error('Seed failed:', err)
+    }
+    setSeeding(false)
+  }
 
   const handleSave = async data => {
     setSaving(true)
@@ -199,10 +226,23 @@ export default function TestimonialsSection() {
         <div className="flex flex-col items-center py-16 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.015)', border: '1px solid rgba(255,255,255,0.05)' }}>
           <Star size={28} className="text-white/15 mb-3" />
-          <p className="font-poppins text-sm text-white/30 mb-4">No testimonials yet</p>
-          <button onClick={() => setModal('add')} className="font-poppins text-sm text-gold-400 underline underline-offset-2">
-            Add first review
-          </button>
+          <p className="font-poppins text-sm text-white/30 mb-2">No testimonials in Firestore yet</p>
+          <p className="font-poppins text-xs text-white/20 mb-5 text-center max-w-xs">
+            Load 6 sample reviews from the website, or add them manually.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={handleSeedDefaults}
+              disabled={seeding}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-poppins text-sm font-semibold disabled:opacity-60"
+              style={{ background: 'linear-gradient(135deg,#fcd34d,#f59e0b)', color: '#030712' }}
+            >
+              {seeding ? <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" /> : '⚡ Load Sample Reviews'}
+            </button>
+            <button onClick={() => setModal('add')} className="px-4 py-2 rounded-xl font-poppins text-sm text-white/40 border border-white/10 hover:bg-white/5">
+              Add Manually
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

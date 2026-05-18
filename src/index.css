@@ -34,3 +34,17 @@ body {
 }
 
 select option { background: #0a0f1e; color: #fff; }
+
+/* Force dark backgrounds on all form inputs — prevents browser white override */
+input, textarea, select {
+  background-color: #0d1628 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.25) !important; }
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 100px #0d1628 inset !important;
+  -webkit-text-fill-color: #fff !important;
+}

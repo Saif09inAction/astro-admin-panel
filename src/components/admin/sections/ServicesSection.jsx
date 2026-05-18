@@ -8,7 +8,20 @@ const ACCENT_COLORS = [
   '#f97316', '#e879f9', '#22d3ee', '#fb7185', '#4ade80',
 ]
 
-const inputCls = "w-full bg-white/4 border border-white/10 rounded-xl px-4 py-2.5 font-poppins text-sm text-white placeholder-white/25 focus:outline-none focus:border-gold-400/30 transition-all"
+/* Default services that mirror the main website */
+const DEFAULT_SERVICES = [
+  { title: 'Love Problem Solution',  desc: 'Reunite with lost love through ancient Vedic remedies. Guaranteed results within 24 hours.', accent: '#f472b6', tag: 'Most Popular', featured: true,  order: 1 },
+  { title: 'Ex Love Back',           desc: 'Restore broken bonds and reunite permanently. Powerful spiritual remedies with real results.', accent: '#fb923c', tag: 'High Demand',  featured: true,  order: 2 },
+  { title: 'Marriage Consultation',  desc: 'Perfect timing, compatibility & removing all obstacles.', accent: '#fbbf24', tag: '', featured: false, order: 3 },
+  { title: 'Career Guidance',        desc: 'Align your career with your cosmic destiny.', accent: '#60a5fa', tag: '', featured: false, order: 4 },
+  { title: 'Kundli Matching',        desc: 'Deep birth chart analysis for a harmonious marriage.', accent: '#a78bfa', tag: '', featured: false, order: 5 },
+  { title: 'Business Problems',      desc: 'Remove planetary blocks and attract lasting prosperity.', accent: '#34d399', tag: '', featured: false, order: 6 },
+  { title: 'Family Disputes',        desc: 'Restore peace and harmony within your family.', accent: '#f97316', tag: '', featured: false, order: 7 },
+  { title: 'Black Magic Protection', desc: 'Neutralise negative energies and evil eye permanently.', accent: '#94a3b8', tag: '', featured: false, order: 8 },
+]
+
+const inputCls = "w-full border border-white/10 rounded-xl px-4 py-2.5 font-poppins text-sm text-white placeholder-white/25 focus:outline-none focus:border-yellow-400/40 transition-all"
+const inputStyle = { background: '#0d1628' }
 
 function ServiceFormModal({ service, onSave, onClose, saving }) {
   const isEdit = !!service?.id
@@ -29,16 +42,12 @@ function ServiceFormModal({ service, onSave, onClose, saving }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[300] flex items-center justify-center px-4"
       style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(10px)' }}
     >
       <motion.div
-        initial={{ scale: 0.92, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.92, y: 20 }}
+        initial={{ scale: 0.92, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.92, y: 20 }}
         className="w-full max-w-lg rounded-2xl overflow-hidden"
         style={{ background: '#0a0f1e', border: '1px solid rgba(245,158,11,0.2)' }}
       >
@@ -52,23 +61,24 @@ function ServiceFormModal({ service, onSave, onClose, saving }) {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="font-poppins text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block">Service Name *</label>
-              <input className={inputCls} placeholder="e.g. Love Problem Solution" value={form.title}
-                onChange={e => setForm(p => ({ ...p, title: e.target.value }))} required />
+              <input className={inputCls} style={inputStyle} placeholder="e.g. Love Problem Solution"
+                value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} required />
             </div>
             <div>
               <label className="font-poppins text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block">Description</label>
-              <textarea className={`${inputCls} resize-none`} rows={2} placeholder="Brief service description…"
+              <textarea className={`${inputCls} resize-none`} style={inputStyle} rows={2}
+                placeholder="Brief service description…"
                 value={form.desc} onChange={e => setForm(p => ({ ...p, desc: e.target.value }))} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="font-poppins text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block">Badge Tag</label>
-                <input className={inputCls} placeholder="e.g. Most Popular" value={form.tag}
-                  onChange={e => setForm(p => ({ ...p, tag: e.target.value }))} />
+                <input className={inputCls} style={inputStyle} placeholder="e.g. Most Popular"
+                  value={form.tag} onChange={e => setForm(p => ({ ...p, tag: e.target.value }))} />
               </div>
               <div>
                 <label className="font-poppins text-[10px] text-white/40 uppercase tracking-wider mb-1.5 block">Sort Order</label>
-                <input type="number" className={inputCls} value={form.order}
+                <input type="number" className={inputCls} style={inputStyle} value={form.order}
                   onChange={e => setForm(p => ({ ...p, order: e.target.value }))} />
               </div>
             </div>
@@ -86,7 +96,7 @@ function ServiceFormModal({ service, onSave, onClose, saving }) {
             <label className="flex items-center gap-3 cursor-pointer">
               <div
                 onClick={() => setForm(p => ({ ...p, featured: !p.featured }))}
-                className={`w-10 h-5 rounded-full transition-all relative ${form.featured ? 'bg-gold-400' : 'bg-white/15'}`}
+                className={`w-10 h-5 rounded-full transition-all relative ${form.featured ? 'bg-yellow-400' : 'bg-white/15'}`}
               >
                 <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${form.featured ? 'left-5' : 'left-0.5'}`} />
               </div>
@@ -94,12 +104,16 @@ function ServiceFormModal({ service, onSave, onClose, saving }) {
             </label>
 
             <div className="flex gap-3 pt-2">
-              <button type="button" onClick={onClose} className="flex-1 py-2.5 rounded-xl font-poppins text-sm text-white/40 border border-white/10 hover:bg-white/5 transition-all">
+              <button type="button" onClick={onClose}
+                className="flex-1 py-2.5 rounded-xl font-poppins text-sm text-white/40 border border-white/10 hover:bg-white/5 transition-all">
                 Cancel
               </button>
-              <button type="submit" disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-poppins text-sm font-semibold transition-all disabled:opacity-60"
+              <button type="submit" disabled={saving}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-poppins text-sm font-semibold transition-all disabled:opacity-60"
                 style={{ background: 'linear-gradient(135deg,#fcd34d,#f59e0b)', color: '#030712' }}>
-                {saving ? <div className="w-4 h-4 border-2 border-navy-950/30 border-t-navy-950 rounded-full animate-spin" /> : <><Save size={14} />{isEdit ? 'Save Changes' : 'Add Service'}</>}
+                {saving
+                  ? <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  : <><Save size={14} />{isEdit ? 'Save Changes' : 'Add Service'}</>}
               </button>
             </div>
           </form>
@@ -112,12 +126,12 @@ function ServiceFormModal({ service, onSave, onClose, saving }) {
 function ServiceCard({ service, onEdit, onDelete }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
       className="relative rounded-2xl p-4 group"
       style={{ background: 'rgba(255,255,255,0.025)', border: `1px solid ${service.accent}20` }}
     >
-      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg,transparent,${service.accent}50,transparent)` }} />
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: `linear-gradient(90deg,transparent,${service.accent}50,transparent)` }} />
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
@@ -135,7 +149,7 @@ function ServiceCard({ service, onEdit, onDelete }) {
           </div>
         </div>
         <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={() => onEdit(service)} className="p-1.5 text-white/25 hover:text-gold-400 hover:bg-gold-400/8 rounded-lg transition-all">
+          <button onClick={() => onEdit(service)} className="p-1.5 text-white/25 hover:text-yellow-400 hover:bg-yellow-400/8 rounded-lg transition-all">
             <Pencil size={13} />
           </button>
           <button onClick={() => onDelete(service.id)} className="p-1.5 text-white/25 hover:text-red-400 hover:bg-red-400/8 rounded-lg transition-all">
@@ -146,7 +160,7 @@ function ServiceCard({ service, onEdit, onDelete }) {
       <p className="font-poppins text-xs text-white/40 leading-relaxed">{service.desc || 'No description'}</p>
       <div className="flex items-center gap-2 mt-3">
         {service.featured && (
-          <span className="flex items-center gap-1 font-poppins text-[9px] text-gold-400 bg-gold-400/8 px-2 py-0.5 rounded-full">
+          <span className="flex items-center gap-1 font-poppins text-[9px] text-yellow-400 bg-yellow-400/8 px-2 py-0.5 rounded-full">
             <Star size={9} fill="currentColor" /> Featured
           </span>
         )}
@@ -159,16 +173,33 @@ function ServiceCard({ service, onEdit, onDelete }) {
 export default function ServicesSection() {
   const [services, setServices] = useState([])
   const [loading,  setLoading]  = useState(true)
-  const [modal,    setModal]    = useState(null) // null | 'add' | service obj
+  const [modal,    setModal]    = useState(null)
   const [saving,   setSaving]   = useState(false)
   const [deleteId, setDeleteId] = useState(null)
+  const [seeding,  setSeeding]  = useState(false)
 
   useEffect(() => {
     getServices()
-      .then(setServices)
-      .catch(() => {})
+      .then(data => setServices(data))
+      .catch(err => console.error('Failed to load services:', err))
       .finally(() => setLoading(false))
   }, [])
+
+  /* Auto-seed default services if Firestore is empty */
+  const handleSeedDefaults = async () => {
+    setSeeding(true)
+    try {
+      const added = []
+      for (const s of DEFAULT_SERVICES) {
+        const ref = await addService(s)
+        added.push({ id: ref.id, ...s })
+      }
+      setServices(added)
+    } catch (err) {
+      console.error('Seed failed:', err)
+    }
+    setSeeding(false)
+  }
 
   const handleSave = async (data) => {
     setSaving(true)
@@ -181,7 +212,9 @@ export default function ServicesSection() {
         setServices(prev => [...prev, { id: ref.id, ...data }])
       }
       setModal(null)
-    } catch {}
+    } catch (err) {
+      console.error('Save failed:', err)
+    }
     setSaving(false)
   }
 
@@ -195,11 +228,9 @@ export default function ServicesSection() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="font-poppins text-xs text-white/35 mt-0.5">
-            {services.length} service{services.length !== 1 ? 's' : ''} · Changes reflect on the website after reload
-          </p>
-        </div>
+        <p className="font-poppins text-xs text-white/35 mt-0.5">
+          {services.length} service{services.length !== 1 ? 's' : ''} · Changes reflect on the website after reload
+        </p>
         <button
           onClick={() => setModal('add')}
           className="flex items-center gap-2 px-4 py-2 rounded-xl font-poppins text-sm font-semibold transition-all hover:scale-[1.02]"
@@ -211,16 +242,29 @@ export default function ServicesSection() {
 
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-7 h-7 border-2 border-gold-400/30 border-t-gold-400 rounded-full animate-spin" />
+          <div className="w-7 h-7 border-2 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin" />
         </div>
       ) : services.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.015)', border: '1px solid rgba(255,255,255,0.05)' }}>
           <Sparkles size={28} className="text-white/15 mb-3" />
-          <p className="font-poppins text-sm text-white/30 mb-4">No services yet</p>
-          <button onClick={() => setModal('add')} className="font-poppins text-sm text-gold-400 underline underline-offset-2">
-            Add your first service
-          </button>
+          <p className="font-poppins text-sm text-white/30 mb-2">No services in Firestore yet</p>
+          <p className="font-poppins text-xs text-white/20 mb-5 text-center max-w-xs">
+            Load the 8 default services from your website, or add them manually.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={handleSeedDefaults}
+              disabled={seeding}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-poppins text-sm font-semibold disabled:opacity-60"
+              style={{ background: 'linear-gradient(135deg,#fcd34d,#f59e0b)', color: '#030712' }}
+            >
+              {seeding ? <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" /> : '⚡ Load Default Services'}
+            </button>
+            <button onClick={() => setModal('add')} className="px-4 py-2 rounded-xl font-poppins text-sm text-white/40 border border-white/10 hover:bg-white/5">
+              Add Manually
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
